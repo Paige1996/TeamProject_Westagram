@@ -51,4 +51,4 @@ http://sparta-bk.club/
   
   * Bio with photo upload 
   
-  * ?
+  * Upload my photoes and contens at the same time as my feed and page
