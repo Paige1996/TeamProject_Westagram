@@ -38,7 +38,7 @@ http://sparta-bk.club/
 
 <h3>* Main Feeds
   
-  * Feeds upload - contents with photos
+  * Feeds upload - text with photos
  
   * Feed likes and likes count 
   
