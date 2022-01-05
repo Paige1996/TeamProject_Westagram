@@ -45,7 +45,7 @@ http://sparta-bk.club/
   * Feed comment
   
   * Output time information when posting feed
-Upload your photos and writings at the same time as your feed and my page.
+
 
 <h3>* My page
   
