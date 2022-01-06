@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Join</title>
+    <meta charset="UTF-8">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <link rel="stylesheet" href="../static/join_style.css">
+</head>
+
+<body>
+    <div class="screen">
+        <div class="join-form">
+            <div class="logo-box"><img id="westa-logo" src="../static/img/westagram-logo.jpg"></div>
+            <div id="join-subtitle">
+                <div><h3>일상을 공유하는 즐거움과 함께</h3></div>
+                <div id="subtitle-2"><h3>추억을 간직해 보세요</h3></div>
+            </div>
+
+            <div class="input-container">
+                <input id="email-input" type="text" name="email" placeholder="이메일 주소">
+                <input id="name-input" type="text" name="name" placeholder="성명">
+                <input id="nickname-input" type="text" name="nickname" placeholder="사용자 이름">
+                <input id="password-input" type="password" name="password" placeholder="비밀번호">
+            </div>
+            <div id="join-button">
+                <button onclick="join()">가입</button>
+            </div>
+        </div>
+
+        <div class="join-footer"><h4>계정이 있으신가요?　<a href="/login">로그인</a></h4></div>
+    </div>
+
+<script>
+    function join(){
+        let email = $('#email-input').val();
+        let name = $('#name-input').val();
+        let nickname = $('#nickname-input').val();
+        let password = $('#password-input').val();
+
+        console.log(email, password, nickname, name);
+            $.ajax({
+                url: "/join",
+                data: {
+                    email: email,
+                    password: password,
+                    nickname: nickname,
+                    name: name
+                },
+                method: 'POST',
+                dataType: 'json',
+                success: function (response){
+                    if (response['result']=='success'){
+                        console.log(response);
+                        alert(response['msg'])
+                        location.replace('/login')
+                    }else{
+                        alert(response['msg'])
+                    }
+                },
+                error: function () {
+                    console.log("에러");
+                },
+                complete: function () {
+                    console.log("완료");
+                }
+            });
+    };
+</script>
+</body>
+</html>

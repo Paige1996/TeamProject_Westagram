@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login</title>
+    <meta charset="UTF-8">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="../static/login_style.css">
+</head>
+
+<body>
+    <div class="screen">
+        <div class="login-form">
+            <div class="logo-box"><img id="westa-logo" src="../static/img/westagram-logo.jpg"></div>
+            <div id="login-subtitle">
+                <div><h3>일상을 공유하는 즐거움과 함께</h3></div>
+                <div id="subtitle-2"><h3>추억을 간직해 보세요</h3></div>
+            </div>
+
+            <div class="input-container">
+                <input id="email-input" type="text" name="email" placeholder="이메일 주소">
+                <input id="password-input" type="password" name="password" placeholder="비밀번호">
+            </div>
+            <div id="login-button">
+                <button onclick="login()">로그인</button>
+            </div>
+        </div>
+
+        <div class="join-footer"><h4>회원이 아니신가요?　<a href="/join">가입하기</a></h4></div>
+
+    </div>
+
+    <script>
+        function login(){
+        let email = $('#email-input').val();
+        let password = $('#password-input').val();
+        console.log(email, password);
+            $.ajax({
+                url: "/login",
+                data: {
+                    email: email,
+                    password: password
+                },
+                method: 'POST',
+                dataType: 'json',
+                success: function (response){
+                    $.cookie('wetoken', response['token'], {path: '/'});
+                        console.log(response);
+                        location.replace('/')
+                },
+                error: function (request, status, error) {
+                    alert('이메일 계정 혹은 비밀번호가 올바르지 않습니다')
+                    console.log("에러");
+                },
+                complete: function () {
+                    console.log("완료");
+                }
+            });
+        };
+    </script>
+
+</body>
+</html>

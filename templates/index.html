@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <title>Westagram</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="../static/index_style.css">
+    <link rel="stylesheet" href="../static/mypage_style.css_style.css">
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet">
+</head>
+
+<body>
+<div class="mobile-screen">
+    <div class="navi">
+        <div id="camera"></div>
+        <div id="instagram"></div>
+        <div id="mypage"></div>
+    </div>
+
+    <div class="feed-head">
+        <div class="user-profile">
+            <div id="user-pic1"></div>
+            <p><span style="font-weight: bolder;">　이용자</span></p>
+        </div>
+        <div class="more-info"></div>
+    </div>
+
+    <div class="feed-pic"></div>
+
+    <div class="feed-footer">
+        <div class="feed-icons">
+            <div class="feed-like"></div>
+            <div class="feed-comment"></div>
+            <div class="feed-dm"></div>
+        </div>
+        <div class="save-feed"></div>
+    </div>
+    <div class="feed-profile">
+        <div id="feed-user-pic1"></div>
+        <p><span style="font-weight: bolder;">　이용자</span>님 <span style="font-weight: bolder;">외 6,671명</span>이 좋아합니다</p>
+    </div>
+
+    <div class="feed-reply"><span style="font-weight: bolder;">이용자</span> 안녕하세요</div>
+    <div class="time-checker">5시간 전</div>
+
+
+    <div class="feed-head">
+        <div class="user-profile">
+            <div id="user-pic2"></div>
+            <p><span style="font-weight: bolder;">　최용자</span></p>
+        </div>
+        <div class="more-info"></div>
+    </div>
+
+    <div class="feed-pic"></div>
+
+    <div class="feed-footer">
+        <div class="feed-icons">
+            <div class="feed-like"></div>
+            <div class="feed-comment"></div>
+            <div class="feed-dm"></div>
+        </div>
+        <div class="save-feed"></div>
+    </div>
+    <div class="feed-profile">
+        <div id="feed-user-pic2"></div>
+        <p><span style="font-weight: bolder;">　최용자</span>님 <span style="font-weight: bolder;">외 6,671명</span>이 좋아합니다</p>
+    </div>
+
+    <div class="feed-reply"><span style="font-weight: bolder;">최용자</span> 안녕하세요</div>
+    <div class="time-checker">5시간 전</div>
+
+    <div class="blank"></div>
+
+    <div class="footer">
+        <div class="home"></div>
+        <div class="search"></div>
+        <div class="trending"></div>
+        <div class="like"></div>
+        <div class="home"></div>
+    </div>
+</div>
+
+
+<div class="desktop-screen">
+    <div class="desktop-background"></div>
+    <div class="desktop-header">
+        <div class="header-wrap">
+            <div id="desktop-logo" onclick="backhome()"></div>
+            <div id="search-bar"><input type="text" placeholder="검색"></div>
+            <div id="desktop-navi">
+                <div class="home" onclick="backhome()"></div>
+                <div class="dm"></div>
+                <div class="trending"></div>
+                <div class="bookmark" onclick="direct_bookmark()"></div>
+                <div class="go-to-mypage" onclick="mypage()"><img id="go-to-mypage" src="{{ my_profile_img }}"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal_overlay" id="first_modal">
+        <div class="modal_window">
+            <div class="modal_header">
+                <div class="modal_blank"> </div>
+                <div class="modal_title">새 이미지 업로드</div>
+                <div><span class="material-icons-outlined">close</span></div>
+            </div>
+            <div class="img_upload_space"><span id="upload_feed_text">사진을 여기에 끌어다 놓으세요</span></div>
+        </div>
+    </div>
+
+    <div class="modal_overlay" id="second_modal">
+        <div class="modal_window">
+            <div class="modal_header">
+                <div class="modal_blank"> </div>
+                <div class="modal_title">새 이미지 업로드</div>
+                <div><span class="material-icons-outlined">close</span></div>
+            </div>
+            <div class="upload_feed_container">
+                <div id="second_img_area"></div>
+                <div class="img_description">
+                    <textarea id="feed_desc" rows="7"></textarea>
+                    <div id="feed_create_button">
+                        <button>공유하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="all-items">
+        <div class="contents-line">
+            {% for feed in feeds %}
+                <div class="desktop-feed-box">
+                    <div class="desktop-feed-head">
+                        <div class="desktop-user-profile">
+                            <div id="desktop-user-pic1"><img src="{{ feed.user_img }}"></div>
+                            <p onclick="location.replace(`/mypage/{{ feed.nickname }}`)"><span style="font-weight: bolder;">　{{ feed.nickname }}</span></p>
+                        </div>
+                        <div class="feed-more-info" onclick="delete_feed('{{ feed._id }}')"><span class="material-icons-outlined">delete</span></div>
+                    </div>
+
+                    <div id="desktop-feed-pic"><img src="{{ feed.image_path }}"></div>
+
+                    <div class="desktop-feed-bottom">
+                        <div class="desktop-feed-footer">
+                            <div class="desktop-feed-icons">
+                                {% if feed.heart == 0 %}
+                                <button onclick="like_done('{{ feed._id }}')" type="button" class="desktop-feed-like"></button>
+                                {% else %}
+                                <button onclick="like_done('{{ feed._id }}')" type="button" class="desktop-feed-heart"></button>
+                                {% endif %}
+                                <div class="desktop-feed-dm"></div>
+                            </div>
+                            {% if feed.bookmark == 0 %}
+                            <div class="desktop-save-feed" onclick="favorite_done('{{ feed._id }}')"></div>
+                            {% else %}
+                            <div class="desktop-saved-feed" onclick="favorite_done('{{ feed._id }}')"></div>
+                            {% endif %}
+                        </div>
+
+                        {% if feed.like_count|int > 1 %}
+                            <div class="desktop-feed-profile">
+                                <div id="desktop-feed-user-pic"><img src="{{ feed.user_img }}"></div>
+                                <p class="who-like-these"><span style="font-weight:bolder;">{{ feed.first_like_user }}</span>님 외 <span style="font-weight:bolder;">{{ feed.etc_count }}명</span>이 좋아합니다</p>
+                            </div>
+                        {% elif feed.like_count|int == 1 %}
+                            <div class="desktop-feed-profile">
+                                <div id="desktop-feed-user-pic"><img src="{{ feed.user_img }}"></div>
+                                <p class="who-like-it"><span style="font-weight:bolder;">{{ feed.first_like_user }}</span>님이 좋아합니다</p>
+                            </div>
+                        {% else %}
+                        {% endif %}
+                        <div class="desktop-feed-reply"><span
+                                style="font-weight: bolder;">{{ feed.nickname }}</span> {{ feed.desc }}</div>
+                        <div class="desktop-more-feed-reply">
+                            {% for comment in feed.comment_list %}
+                                <div class="more-feed-reply"><span
+                                        style="font-weight:bolder">{{ comment.my_nickname }}</span> {{ comment.comment }}
+                                </div>
+                            {% endfor %}
+                        <div class="desktop-time-checker">{{ feed.time }}</div>
+                        <div class="comment-container">
+                            <input class="comment-box" id="{{ feed._id }}" placeholder="댓글 달기...">
+                            <button onclick="comment_done('{{ feed._id }}')">게시</button>
+                        </div>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+
+
+        <div class="user-suggestion-line">
+            <div class="suggestion-container">
+                <div class="user-container">
+                    <div class="profile-img" onclick="mypage()">
+                        <img class="profile" src="{{ my_profile_img }}">
+                    </div>
+                    <div class="profile-desc">
+                        <div class="profile-nickname" onclick="mypage()">{{ my_nickname }}</div>
+                        <div class="profile-name" onclick="mypage()">{{ my_name }}</div>
+                    </div>
+                    <button onclick="logout()" id="logout">
+                        <span id="logout-text">로그아웃</span>
+                    </button>
+                </div>
+
+                <div id="suggestion">
+                    <div id="suggestion-text">회원님을 위한 추천</div>
+                    <button id="suggestion-button">
+                        <span>모두 보기</span>
+                    </button>
+                </div>
+
+                <div>
+                    <div class="suggestion-candidate">
+                        <div class="candidate-img">
+                            <img src="https://i.imgur.com/doPF2xK.jpg">
+                        </div>
+                        <div class="candidate-desc">
+                            <div class="candidate-nickname">jerry_theKing</div>
+                            <div class="candidate-issue">회원님을 놀리려합니다.</div>
+                        </div>
+                        <button class="follow-button">
+                            <span>팔로우</span>
+                        </button>
+                    </div>
+                    <div class="suggestion-candidate">
+                        <div class="candidate-img">
+                            <img src="https://i.imgur.com/FMKfMwv.png">
+                        </div>
+                        <div class="candidate-desc">
+                            <div class="candidate-nickname">lovely_kitty</div>
+                            <div class="candidate-issue">회원님을 유혹하려합니다.</div>
+                        </div>
+                        <button class="follow-button">
+                            <span>팔로우</span>
+                        </button>
+                    </div>
+                    <div class="suggestion-candidate">
+                        <div class="candidate-img">
+                            <img src="https://i.imgur.com/yj8JnrI.jpg">
+                        </div>
+                        <div class="candidate-desc">
+                            <div class="candidate-nickname">fear_me365</div>
+                            <div class="candidate-issue">회원님을 조지려합니다.</div>
+                        </div>
+                        <button class="follow-button">
+                            <span>팔로우</span>
+                        </button>
+                    </div>
+                    <div class="suggestion-candidate">
+                        <div class="candidate-img">
+                            <img src="https://i.imgur.com/Mp0s1AP.jpg">
+                        </div>
+                        <div class="candidate-desc">
+                            <div class="candidate-nickname">creator_god</div>
+                            <div class="candidate-issue">회원님을 만들었습니다.</div>
+                        </div>
+                        <button class="follow-button">
+                            <span>팔로우</span>
+                        </button>
+                    </div>
+                    <div class="suggestion-candidate">
+                        <div class="candidate-img">
+                            <img src="https://i.imgur.com/nOQxE7S.jpg">
+                        </div>
+                        <div class="candidate-desc">
+                            <div class="candidate-nickname">corejemjem1522</div>
+                            <div class="candidate-issue">회원님을 팔로우합니다.</div>
+                        </div>
+                        <button class="follow-button">
+                            <span>팔로우</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="TMI">
+                    <div>소개 · 도움말 · 홍보센터 · API · 채용정보</div>
+                    <div>개인정보 처리방침 · 약관 · 위치 · 인기 계정 · 해시태그 · 언어</div>
+                    <div>　</div>
+                    <div>ⓒ 2021 Westagram from Meta</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let files;
+
+    function logout() {
+        $.removeCookie('wetoken')
+        alert('안전하게 로그아웃 되었습니다')
+        location.replace('/login')
+    }
+
+    function backhome() {
+        location.replace('/')
+    }
+
+    function mypage() {
+        location.replace('/mypage')
+    }
+
+    function direct_bookmark() {
+        let status = 'bm_first'
+        location.replace(`/mypage/${status}`)
+    }
+
+    $('.trending').click(function () {
+        $('#first_modal').css({
+            display: 'flex'
+        });
+    });
+
+    $('.material-icons-outlined').click(function () {
+        $('.modal_overlay').css({
+            display: 'none'
+        });
+    })
+
+    $('#feed_create_button').click(function () {
+        let file = files[0];
+        let image = files[0].name;
+        let desc = $('#feed_desc').val();
+
+        let fd = new FormData();
+
+        fd.append('file', file);
+        fd.append('image', image);
+        fd.append('desc', desc);
+
+        $.ajax({
+            url: "/api/feeds",
+            data: fd,
+            method: "POST",
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                console.log("성공");
+            },
+            error: function (request, status, error) {
+                console.log("에러");
+            },
+            complete: function () {
+                console.log("완료");
+                location.replace("/");
+            }
+        });
+    });
+
+    $('.img_upload_space')
+        .on("dragover", dragOver)
+        .on("dragleave", dragOver)
+        .on("drop", uploadFiles);
+
+    function dragOver(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (e.type == "dragover") {
+            $(e.target).css({
+                "background-color": "lightgray",
+                "outline-offset": "-20px"
+            });
+        } else {
+            $(e.target).css({
+                "background-color": "white",
+                "outline-offset": "-10px"
+            });
+        }
+    }
+
+    function uploadFiles(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        e.dataTransfer = e.originalEvent.dataTransfer; //2
+        files = e.target.files || e.dataTransfer.files;
+        if (files.length > 1) {
+            alert('하나만 올려라.');
+        }
+
+        if (files[0].type.match(/image.*/)) {
+            $('#first_modal').css({
+                display: 'none'
+            });
+            $('#second_modal').css({
+                display: 'flex'
+            });
+            $('#second_img_area').css({
+                "background-image": "url(" + window.URL.createObjectURL(files[0]) + ")",
+                "outline": "none",
+                "background-size": "100% 100%"
+            });
+        } else {
+            alert('이미지 형식의 파일만 지원합니다');
+        }
+    }
+
+    function like_done(feed_id) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/like',
+            data: {feed_id: feed_id},
+            dataType: 'json',
+            success: function (response) {
+                alert(response['msg'])
+                location.replace('/')
+            }
+        });
+    }
+
+    function comment_done(feed_id) {
+        let comment = $(`#${feed_id}`).val()
+        $.ajax({
+            type: 'POST',
+            url: '/api/comment',
+            data: {feed_id: feed_id, comment_give: comment},
+            dataType: 'json',
+            success: function (response) {
+                location.replace('/')
+            }
+        });
+    }
+
+    function favorite_done(feed_id) {
+        console.log(feed_id)
+        $.ajax({
+            type: 'POST',
+            url: '/api/favorite',
+            data: {feed_id: feed_id},
+            dataType: 'json',
+            success: function (response) {
+                alert(response['msg'])
+                location.replace('/')
+            }
+        });
+    }
+
+    function delete_feed(feed_id) {
+        console.log(feed_id)
+        $.ajax({
+            type: 'POST',
+            url: '/api/feeds/delete',
+            data: {feed_id: feed_id},
+            dataType: 'json',
+            success: function (response) {
+                alert(response['msg'])
+                location.replace('/')
+            }
+        });
+    }
+
+</script>
+
+</body>
+</html>
