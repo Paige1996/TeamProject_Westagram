@@ -11,6 +11,7 @@ http://sparta-bk.club/
 
 
 <h3>Instagram clone (Westagram)
+  <h4> tech : html, css, python, flask, mongodb, ajax
 
 
 
